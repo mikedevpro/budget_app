@@ -16,7 +16,7 @@ A budget and expense tracking app built to practice full-stack fundamentals: cle
 **Tooling:** Git, npm
 
 ## 📸 Screenshots
-Coming soon (added in the next commit).
+![Budget App UI](docs/screenshots/dashboard.png)
 
 ## 🚀 Getting Started
 ### Prerequisites
