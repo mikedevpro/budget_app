@@ -10,6 +10,9 @@ A budget and expense tracking app built to practice full-stack fundamentals: cle
 - List and review spending entries
 - Clear, simple UI (easy to extend into categories/charts)
 
+## 🔗 Live Demo
+Coming soon — deployment planned (Netlify/Vercel).
+
 ## 🧱 Tech Stack
 **Frontend:** React, JavaScript, HTML, CSS  
 **Backend (planned / in progress):** Node/Express (or API), Database (Postgres/Mongo)  
