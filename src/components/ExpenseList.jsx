@@ -27,21 +27,29 @@ export default function ExpenseList({ expenses, onRemoveExpense }) {
           >
             <div>
               <strong>{exp.name}</strong>
-              <div style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: 2 }}>
-                {exp.category} &middot; {''}
-                {new Date(exp.createdAt).toLocaleDateString()}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ fontWeight: 600 }}>${exp.amount.toFixed(2)}</div>
               </div>
+            
 
-              <div style={{ fontWeight: 600 }}>
-                ${exp.amount.toFixed(2)}
-              </div>
-            </div>
-
-            {/* <button type='button' onClick={() => onRemoveExpense(exp.id)}>
-              Remove
-            </button> */}
-          </li>
-        ))}
-      </ul>
-    );
+            <button 
+              type='button' 
+              onClick={() => onRemoveExpense(exp.id)}
+              style={{
+                border: '1px solid #e5e7eb',
+                borderRadius: 8,
+                padding: '0.35rem 0.6rem',
+                cursor: 'pointer',
+                background: 'white',
+              }}
+              aria-label={`Delete ${exp.name}`}
+              title='Delete'
+            >
+              &times;
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 } 
