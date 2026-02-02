@@ -26,15 +26,20 @@ export default function ExpenseList({ expenses, onRemoveExpense }) {
             }}
           >
             <div>
-              <div style={{ fontWeight: 600 }}>{exp.name}</div>
-              <div style={{ fontSize: 12, opacity: 0.7 }}>
+              <strong>{exp.name}</strong>
+              <div style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: 2 }}>
+                {exp.category} &middot; {''}
+                {new Date(exp.createdAt).toLocaleDateString()}
+              </div>
+
+              <div style={{ fontWeight: 600 }}>
                 ${exp.amount.toFixed(2)}
               </div>
             </div>
 
-            <button type='button' onClick={() => onRemoveExpense(exp.id)}>
+            {/* <button type='button' onClick={() => onRemoveExpense(exp.id)}>
               Remove
-            </button>
+            </button> */}
           </li>
         ))}
       </ul>
