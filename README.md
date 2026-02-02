@@ -1,22 +1,32 @@
-## Budget App
 
-A full-stack budget tracking application designed to help users manage expenses and understand their spending habits.
+# Budget App
 
-## Features
-- Add and track expenses
-- View spending totals
-- Simple, clean user interface
+A budget and expense tracking app built to practice full-stack fundamentals: clean UI, predictable state updates, and a codebase that’s easy to extend (auth, categories, charts, persistence).
 
-## Tech Stack
-- React
-- JavaScript
-- HTML
-- CSS
+> **Goal:** Showcase junior full-stack skills—component-driven UI, data flow, validation, and production-ready project structure.
 
-## Project Status
-This project is actively in development. New features and improvements are being added regularly.
+## ✨ Features
+- Add expenses with basic validation
+- List and review spending entries
+- Clear, simple UI (easy to extend into categories/charts)
 
-## Future Improvements
-- Expense categories
-- Data persistence
-- Visual charts and summaries
+## 🧱 Tech Stack
+**Frontend:** React, JavaScript, HTML, CSS  
+**Backend (planned / in progress):** Node/Express (or API), Database (Postgres/Mongo)  
+**Tooling:** Git, npm
+
+## 📸 Screenshots
+Coming soon (added in the next commit).
+
+## 🚀 Getting Started
+### Prerequisites
+- Node.js (LTS recommended)
+- npm
+
+### Install & run
+```bash
+npm install
+npm start
+
+# Example environment variables (do not put secrets in here)
+# REACT_APP_API_URL=http://localhost:5000
