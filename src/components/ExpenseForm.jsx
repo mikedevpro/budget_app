@@ -34,6 +34,22 @@ export default function ExpenseForm({ onAddExpense }) {
 
     setName('');
     setAmount('');
+    setCategory('General');
+  };
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+    if (error) setError('');
+  };
+
+  const handleAmountChange = (e) => {
+    setAmount(e.target.value);
+    if (error) setError('');
+  };
+
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+    if (error) setError('');
   };
 
   return (
@@ -41,7 +57,7 @@ export default function ExpenseForm({ onAddExpense }) {
       onSubmit={handleSubmit} 
       style={{ display: 'grid', gap: '0.75rem', maxWidth: 420}}
     >
-      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+      <select value={category} onChange={handleCategoryChange}>
         <option value="General">General</option>
         <option value="Food">Food</option>
         <option value="Transport">Transport</option>
@@ -52,19 +68,15 @@ export default function ExpenseForm({ onAddExpense }) {
         <option value="Other">Other</option>
       </select>
 
-      <span style={{ opacity: 0.75, fontSize: '0.9rem' }}>
-        {category}
-      </span>
-
       <input 
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleNameChange}
         placeholder='Expense Name (e.g., Coffee)'
       />
       
       <input 
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={handleAmountChange}
         type='number'
         inputMode='decimal'
         step='0.01'
