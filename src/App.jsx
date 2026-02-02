@@ -2,12 +2,19 @@ import { useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import Summary from './components/Summary';
+import { useEffect } from 'react';
 
 export default function App() {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState(() => {
+    const saved = localStorage.getItem('expenses');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }, [expenses]);
 
   const handleAddExpense = (newExpense) => {
-    console.log('ADDING:', newExpense);
     setExpenses((prev) => [newExpense, ...prev]);
   };
 
