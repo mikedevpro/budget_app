@@ -4,6 +4,7 @@ export default function ExpenseForm({ onAddExpense }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
+  const [category, setCategory] = useState('General');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ export default function ExpenseForm({ onAddExpense }) {
       id: crypto.randomUUID(),
       name: trimmed,
       amount: Number(numericAmount.toFixed(2)),
+      category,
       createdAt: new Date().toISOString(),
     });
 
@@ -39,6 +41,20 @@ export default function ExpenseForm({ onAddExpense }) {
       onSubmit={handleSubmit} 
       style={{ display: 'grid', gap: '0.75rem', maxWidth: 420}}
     >
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <option value="General">General</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Health">Health</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <span style={{ opacity: 0.75, fontSize: '0.9rem' }}>
+        {category}
+      </span>
 
       <input 
         value={name}
@@ -63,6 +79,7 @@ export default function ExpenseForm({ onAddExpense }) {
       )}
 
       <button type='submit'>Add Expense</button>
+
     </form>
   );
 }
