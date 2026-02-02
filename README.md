@@ -23,10 +23,11 @@ Coming soon (added in the next commit).
 - Node.js (LTS recommended)
 - npm
 
-### Install & run
+### Install dependencies
 ```bash
 npm install
 npm start
+http://localhost:3000
 
 # Example environment variables (do not put secrets in here)
 # REACT_APP_API_URL=http://localhost:5000
