@@ -72,6 +72,7 @@ export default function ExpenseForm({ onAddExpense }) {
         value={name}
         onChange={handleNameChange}
         placeholder='Expense Name (e.g., Coffee)'
+        required
       />
       
       <input 
@@ -80,8 +81,9 @@ export default function ExpenseForm({ onAddExpense }) {
         type='number'
         inputMode='decimal'
         step='0.01'
-        min='0'
+        min='0.01'
         placeholder='Amount'
+        required
       />
 
       {error && (
