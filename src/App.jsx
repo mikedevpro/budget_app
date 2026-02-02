@@ -10,6 +10,25 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [categoryFilter, setCategoryFilter] = useState('All');
+    const categories = ['All', ...Array.from(new Set(visibleExpenses.map((e) => e.category)))];
+    const visibleExpenses = 
+    categoryFilter === 'All' 
+      ? expenses 
+      : expenses.filter((e) => e.category === categoryFilter);
+
+  <select 
+    value={categoryFilter}
+    onChange={(e) => setCategoryFilter(e.target.value)}
+    style={{ marginTop: '0.5rem 0 1rem', padding: '0.5rem', borderRadius: 8 }}
+  >
+    {categories.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))}
+  </select>;
+
   useEffect(() => {
     localStorage.setItem('expenses', JSON.stringify(expenses));
   }, [expenses]);

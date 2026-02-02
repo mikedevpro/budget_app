@@ -10,8 +10,8 @@ export default function ExpenseList({ expenses, onRemoveExpense }) {
       <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>${total.toFixed(2)}</div>
     </div>
 
-
     return (
+      
       <ul 
         style={{ 
           listStyle: 'none', 
@@ -21,7 +21,7 @@ export default function ExpenseList({ expenses, onRemoveExpense }) {
           gap: '0.5rem' 
         }}
     >
-        {expenses.map((exp) => (
+        {visibleExpenses.map((exp) => (
           <li
             key={exp.id}
             style={{
