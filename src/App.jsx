@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import Summary from './components/Summary';
-import { useEffect } from 'react';
+
 
 export default function App() {
   const [expenses, setExpenses] = useState(() => {
