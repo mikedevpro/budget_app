@@ -3,6 +3,14 @@ export default function ExpenseList({ expenses, onRemoveExpense }) {
         return <p style={{ marginTop: '1rem' }}>No expenses yet. Add one above 👆</p>;
     }
 
+    const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+    <div style={{ margin: '1rem 0', padding: '1rem', border: '1px solid #e5e7eb', borderRadius: 12 }}>
+      <div style={{ opacity: 0.8, fontSize: '0.9rem' }}>Total spent</div>
+      <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>${total.toFixed(2)}</div>
+    </div>
+
+
     return (
       <ul 
         style={{ 
