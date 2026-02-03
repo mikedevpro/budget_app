@@ -60,7 +60,7 @@ export default function ExpenseForm({ onAddExpense }) {
       onSubmit={handleSubmit} 
       style={{ display: 'grid', gap: '0.75rem', maxWidth: 420}}
     >
-      <select value={category} onChange={handleCategoryChange}>
+      <select className="select" value={category} onChange={handleCategoryChange}>
         <option value="General">General</option>
         <option value="Food">Food</option>
         <option value="Transport">Transport</option>
@@ -72,6 +72,7 @@ export default function ExpenseForm({ onAddExpense }) {
       </select>
 
       <input 
+        className="input"
         value={name}
         onChange={handleNameChange}
         placeholder='Expense Name (e.g., Coffee)'
@@ -79,6 +80,7 @@ export default function ExpenseForm({ onAddExpense }) {
       />
       
       <input 
+        className="input"
         value={amount}
         onChange={handleAmountChange}
         type='number'

@@ -41,24 +41,26 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: 720, margin: '0 auto' }}>
-      <h1 style={{ marginBottom: '0.25rem' }}>My Budget App</h1>
-      <p style={{ marginTop: 0, opacity: 0.8 }}>Track your monthly expenses</p>
+    <div className="container">
+    <header>
+      <h1 style={{ marginBottom: "0.25rem" }}>My Budget App</h1>
+      <p className="section-subtitle">Track your monthly expenses</p>
+    </header>
 
+    <div className="section card">
+      <div className="section-title">Add an expense</div>
       <ExpenseForm onAddExpense={handleAddExpense} />
+    </div>
 
-      <label style={{ display: 'block', marginTop: '1rem', fontWeight: 500 }}>
-        Filter by category
+    <div className="section card">
+      <div className="section-title">Filter</div>
+      <label style={{ display: "block", fontWeight: 500, marginBottom: "0.5rem" }}>
+        Category
       </label>
       <select
+        className="select"
         value={categoryFilter}
         onChange={(e) => setCategoryFilter(e.target.value)}
-        style={{
-          margin: '0.5rem 0 1rem',
-          padding: '0.5rem',
-          borderRadius: 8,
-          border: '1px solid #e5e7eb',
-        }}
       >
         {categories.map((cat) => (
           <option key={cat} value={cat}>
@@ -66,15 +68,25 @@ export default function App() {
           </option>
         ))}
       </select>
-
-      <Summary expenses={expenses} />
-      <Charts expenses={expenses} />
-
-      <ExpenseList
-        visibleExpenses={visibleExpenses}
-        onDeleteExpense={handleDeleteExpense}
-      />
     </div>
+
+    <div className="section">
+      <Summary 
+      expenses={expenses} />
+    </div>
+
+    <div className="section">
+      <Charts 
+      expenses={visibleExpenses} />
+    </div>
+
+    <div className="section">
+      <div className="section-title">Expenses</div>
+      <ExpenseList 
+      visibleExpenses={visibleExpenses} 
+      onDeleteExpense={handleDeleteExpense} />
+    </div>
+  </div>
   );
 }
 
