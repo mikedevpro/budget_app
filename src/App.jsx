@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import Summary from './components/Summary';
+import Charts from './components/Charts';
 
 export default function App() {
   const [expenses, setExpenses] = useState(() => {
@@ -62,6 +63,7 @@ export default function App() {
       </select>
 
       <Summary expenses={expenses} />
+      <Charts expenses={expenses} />
 
       <ExpenseList
         visibleExpenses={visibleExpenses}
