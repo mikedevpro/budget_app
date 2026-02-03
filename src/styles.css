@@ -118,3 +118,24 @@ body {
   opacity: 0.8;
   font-size: 0.9rem;
 }
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast {
+  animation: toastIn 160ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

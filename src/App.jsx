@@ -19,6 +19,26 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const toastTimerRef = useRef(null);
 
+  const dismissToast = () => {
+  if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+  setToast(null);
+};
+
+useEffect(() => {
+  return () => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+  };
+}, []);
+
+useEffect(() => {
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") dismissToast();
+  };
+
+  window.addEventListener("keydown", onKeyDown);
+  return () => window.removeEventListener("keydown", onKeyDown);
+}, []);
+
 useEffect(() => {
   return () => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -50,7 +70,7 @@ useEffect(() => {
       body: `${newExpense.name} • $${Number(newExpense.amount || 0).toFixed(2)}`,
     });
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setToast(null), 2200);
+    toastTimerRef.current = setTimeout(dismissToast, 2200);
   };
 
   const handleDeleteExpense = (id) => {
@@ -104,13 +124,28 @@ useEffect(() => {
       visibleExpenses={visibleExpenses} 
       onDeleteExpense={handleDeleteExpense} />
     </div>
-    {toast && (
-      <div className="toast" role="status" aria-live="polite">
+    
+       {toast && (
+  <div className="toast" role="status" aria-live="polite">
+    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+      <div style={{ flex: 1 }}>
         <p className="toast-title">{toast.title}</p>
         <p className="toast-body">{toast.body}</p>
       </div>
-)}
 
+      <button
+        type="button"
+        className="btn"
+        onClick={dismissToast}
+        aria-label="Dismiss notification"
+        title="Dismiss"
+        style={{ padding: "0.25rem 0.5rem" }}
+      >
+        &times;
+      </button>
+    </div>
+  </div>
+)}
   </div>
   );
 }
