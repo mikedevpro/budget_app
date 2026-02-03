@@ -66,16 +66,8 @@ export default function ExpenseList({ visibleExpenses, onDeleteExpense }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  if (window.confirm(`Delete "${exp.name}"?`)) onDeleteExpense(exp.id);
-                }}
-                style={{
-                  border: '1px solid #e5e7eb',
-                  borderRadius: 8,
-                  padding: '0.35rem 0.6rem',
-                  cursor: 'pointer',
-                  background: '#fff',
-                }}
+                onClick={() => onDeleteExpense(exp.id)}
+                className="btn btn-danger"
                 aria-label={`Delete ${exp.name}`}
                 title="Delete"
               >

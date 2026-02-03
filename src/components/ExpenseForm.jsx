@@ -52,6 +52,9 @@ export default function ExpenseForm({ onAddExpense }) {
     if (error) setError('');
   };
 
+  const isDisabled = !name.trim() || Number(amount) <= 0;
+
+
   return (
     <form 
       onSubmit={handleSubmit} 
@@ -92,7 +95,9 @@ export default function ExpenseForm({ onAddExpense }) {
         </p>
       )}
 
-      <button type='submit'>Add Expense</button>
+      <button type='submit' className='btn btn-primary' disabled={isDisabled}>
+        Add Expense
+      </button>
 
     </form>
   );
