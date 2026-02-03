@@ -70,17 +70,18 @@ export default function App() {
       </select>
     </div>
 
-    <div className="section">
+    <div className="section card">
       <Summary 
       expenses={expenses} />
     </div>
 
-    <div className="section">
+    <div className="section card">
       <Charts 
       expenses={visibleExpenses} />
     </div>
 
-    <div className="section">
+    <div className="section card">
+      <hr style={{ border: "none", borderTop: "1px solid #e5e7eb" }} />
       <div className="section-title">Expenses</div>
       <ExpenseList 
       visibleExpenses={visibleExpenses} 
