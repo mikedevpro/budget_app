@@ -1,6 +1,20 @@
 export default function ExpenseList({ visibleExpenses, onDeleteExpense }) {
   if (!Array.isArray(visibleExpenses) || visibleExpenses.length === 0) {
-    return <p style={{ marginTop: '1rem' }}>No expenses yet. Add one above 👆</p>;
+    return (
+      <div
+        style={{
+          marginTop: '1rem',
+          padding: '1rem',
+          border: '1px dashed #e5e7eb',
+          borderRadius: 8,
+          opacity: 0.85,
+        }}      >
+        No expenses match this filter.
+        <div style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
+          Try selecting a different category or add a new expense.
+        </div>
+      </div>
+    );
   }
 
   const total = visibleExpenses.reduce((sum, exp) => sum + exp.amount, 0);

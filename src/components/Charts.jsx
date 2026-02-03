@@ -49,7 +49,7 @@ export default function Charts({ expenses }) {
   if (safeExpenses.length === 0) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8 }}>
-        Add a few expenses to see charts.
+        Add your first expense to unlock insights 📊
       </div>
     );
   }
@@ -59,6 +59,9 @@ export default function Charts({ expenses }) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8 }}>
         No expenses in the selected range.
+        <div style={{ fontSize: "0.85rem", marginTop: "0.25rem" }}>
+          Try expanding the range or add more expenses.
+        </div>
       </div>
     );
   }
