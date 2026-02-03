@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export default function ExpenseForm({ onAddExpense }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
   const [category, setCategory] = useState('General');
+  const nameRef = useRef(null);
+
+  useEffect(() => {
+    nameRef.current?.focus();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,6 +40,7 @@ export default function ExpenseForm({ onAddExpense }) {
     setName('');
     setAmount('');
     setCategory('General');
+    nameRef.current?.focus();
   };
 
   const handleNameChange = (e) => {
@@ -52,7 +58,13 @@ export default function ExpenseForm({ onAddExpense }) {
     if (error) setError('');
   };
 
-  const isDisabled = !name.trim() || Number(amount) <= 0;
+  // const isDisabled = !name.trim() || Number(amount) <= 0;
+
+  const isDisabled = useMemo(() => {
+    const trimmed = name.trim();
+    const numericAmount = Number(amount);
+    return !trimmed || !Number.isFinite(numericAmount) || numericAmount <= 0;
+  }, [name, amount]);
 
 
   return (
@@ -72,10 +84,12 @@ export default function ExpenseForm({ onAddExpense }) {
       </select>
 
       <input 
+        ref={nameRef}
         className="input"
         value={name}
         onChange={handleNameChange}
         placeholder='Expense Name (e.g., Coffee)'
+        autoComplete="off"
         required
       />
       
@@ -98,7 +112,7 @@ export default function ExpenseForm({ onAddExpense }) {
       )}
 
       <button type='submit' className='btn btn-primary' disabled={isDisabled}>
-        Add Expense
+        Add expense
       </button>
 
     </form>
