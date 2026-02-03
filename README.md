@@ -20,6 +20,9 @@ Coming soon — deployment planned (Netlify/Vercel).
 
 ## 📸 Screenshots
 ![Budget App UI](docs/screenshots/dashboard.png)
+![Graphical info](docs/screenshots/graphs.png)
+![More Graphs!](docs/screenshots/graphs2.png)
+![More updates!](docs/screenshots/totalUpdates.png)
 
 ## 🚀 Getting Started
 ### Prerequisites
