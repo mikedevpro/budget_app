@@ -16,7 +16,12 @@ export default function App() {
 
   const [categoryFilter, setCategoryFilter] = useState('All');
 
-  const categories = ['All', ...Array.from(new Set(expenses.map((e) => e.category)))];
+  const categories = [
+    'All', 
+    ...Array.from(
+      new Set(expenses.map((e) => e.category || 'General'))
+    ),
+  ];
 
   const visibleExpenses =
     categoryFilter === 'All'
