@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import Summary from './components/Summary';
@@ -15,6 +15,16 @@ export default function App() {
   });
 
   const [categoryFilter, setCategoryFilter] = useState('All');
+
+  const [toast, setToast] = useState(null);
+  const toastTimerRef = useRef(null);
+
+useEffect(() => {
+  return () => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+  };
+}, []);
+
 
   const categories = [
     'All', 
@@ -34,6 +44,13 @@ export default function App() {
 
   const handleAddExpense = (newExpense) => {
     setExpenses((prev) => [newExpense, ...prev]);
+
+    setToast({ 
+      title: 'Expense Added ✅',
+      body: `${newExpense.name} • $${Number(newExpense.amount || 0).toFixed(2)}`,
+    });
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 2200);
   };
 
   const handleDeleteExpense = (id) => {
@@ -87,6 +104,13 @@ export default function App() {
       visibleExpenses={visibleExpenses} 
       onDeleteExpense={handleDeleteExpense} />
     </div>
+    {toast && (
+      <div className="toast" role="status" aria-live="polite">
+        <p className="toast-title">{toast.title}</p>
+        <p className="toast-body">{toast.body}</p>
+      </div>
+)}
+
   </div>
   );
 }

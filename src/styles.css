@@ -27,6 +27,14 @@ body {
   opacity: 0.55;
 }
 
+/* Accessible focus rings */
+.input:focus,
+.select:focus,
+.btn:focus {
+  outline: 3px solid rgba(15, 23, 42, 0.35);
+  outline-offset: 2px;
+}
+
 /* Primary action */
 .btn-primary {
   border-color: #0f172a;
@@ -85,4 +93,28 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   padding: 0.55rem 0.7rem;
+}
+
+.toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  background: white;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.12);
+  max-width: 320px;
+}
+
+.toast-title {
+  font-weight: 800;
+  margin: 0;
+}
+
+.toast-body {
+  margin: 0.25rem 0 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
 }
