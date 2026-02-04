@@ -33,12 +33,13 @@ This project demonstrates how to take a simple idea and evolve it into a product
 - Responsive layout with polished UI states
 
 ## 🔗 Live Demo
-Coming soon — deployment planned (Netlify/Vercel).
+(Coming soon — deployment in progress)
 
-## 🧱 Tech Stack
-**Frontend:** React, JavaScript, HTML, CSS  
-**Backend (planned / in progress):** Node/Express (or API), Database (Postgres/Mongo)  
-**Tooling:** Git, npm
+## 🛠️ Tech Stack
+**React**(Hooks, functional components) 
+**Recharts**for data visualization  
+**CSS**(custom utility styles, no framework)
+**LocalStorage**for persistance
 
 ## 📸 Screenshots
 ![Budget App UI](docs/screenshots/dashboard.png)
