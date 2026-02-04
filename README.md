@@ -23,7 +23,7 @@
 - Responsive layout with polished UI states
 
 ## 🔗 Live Demo
-(Coming soon — deployment in progress)
+- (Coming soon — deployment in progress)
 
 ## 🛠️ Tech Stack
 - **React** (Hooks, functional components) 
