@@ -26,10 +26,10 @@ This project demonstrates how to take a simple idea and evolve it into a product
 (Coming soon — deployment in progress)
 
 ## 🛠️ Tech Stack
-**React** (Hooks, functional components) 
-**Recharts** for data visualization  
-**CSS** (custom utility styles, no framework)
-**LocalStorage** for persistance
+- **React** (Hooks, functional components) 
+- **Recharts** for data visualization  
+- **CSS** (custom utility styles, no framework)
+- **LocalStorage** for persistance
 
 ## 🧠 Design & Engineering Decisions
 **State Management**
@@ -50,6 +50,13 @@ This project demonstrates how to take a simple idea and evolve it into a product
 - Charts use derived, memoized data
 - Time-based filtering implemented with useMemo
 - Graceful handling of empty or invalid data
+
+## 📈 What I Learned
+- Structuring React components around responsibility boundaries
+- Turning derived state into reusable, testable logic
+- Improving UX through micro-interactions and feedback
+- Debugging real-world React issues (props, rendering, scope)
+- Designing features incrementally instead of over-engineering
 
 ## 📸 Screenshots
 ![Budget App UI](docs/screenshots/dashboard.png)
