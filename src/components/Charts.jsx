@@ -29,7 +29,10 @@ function formatShortDate(yyyyMmDd) {
 }
 
 export default function Charts({ expenses }) {
-  const safeExpenses = Array.isArray(expenses) ? expenses : [];
+  const safeExpenses = useMemo(
+    () => Array.isArray(expenses) ? expenses : [],
+    [expenses]
+  );
   const [range, setRange] = useState("30"); // "7", "30", "all"
 
   const filteredForCharts = useMemo(() => {
@@ -43,7 +46,7 @@ export default function Charts({ expenses }) {
       const d = new Date(e.createdAt);
       return !Number.isNaN(d.getTime()) && d >= cutoff;
     });
-  }, [safeExpenses, range]);
+  }, [range, safeExpenses]);
 
   // If there are no expenses at all
   if (safeExpenses.length === 0) {
