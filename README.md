@@ -11,25 +11,15 @@ This project demonstrates how to take a simple idea and evolve it into a product
 
 ## ✨ Features
 - Add, categorize, and delete expenses
-
 - Persistent data using localStorage
-
 - Filter expenses by category
-
 - Real-time spending summaries
-
 - Interactive charts:
-
 - Spending by category
-
 - Spending over time
-
 - 7 / 30 / All-time range toggle
-
 - Accessible, keyboard-friendly form controls
-
 - Toast notifications for user feedback
-
 - Responsive layout with polished UI states
 
 ## 🔗 Live Demo
@@ -40,6 +30,26 @@ This project demonstrates how to take a simple idea and evolve it into a product
 **Recharts** for data visualization  
 **CSS** (custom utility styles, no framework)
 **LocalStorage** for persistance
+
+## 🧠 Design & Engineering Decisions
+**State Management**
+
+- App.jsx acts as the single source of truth for expenses
+- Derived data (filters, totals, charts) is computed from base state
+- Components are kept focused and reusable
+
+**UX & Accessibility**
+
+- Keyboard-first form interaction (autofocus, Enter flow)
+- Disabled submit states prevent invalid actions
+- Clear empty states that explain what to do next
+- ARIA attributes and visible focus states for accessibility
+
+**Data Visualization**
+
+- Charts use derived, memoized data
+- Time-based filtering implemented with useMemo
+- Graceful handling of empty or invalid data
 
 ## 📸 Screenshots
 ![Budget App UI](docs/screenshots/dashboard.png)
