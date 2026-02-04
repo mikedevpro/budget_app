@@ -25,7 +25,7 @@
   - Accessible focus states and labeled inputs
 
 ## 🔗 Live Demo
-- **Coming soon (deploying today).**
+- https://budget-app-lake-omega.vercel.app
 
 ## 🛠️ Tech Stack
 - **React** (Hooks, functional components) 
