@@ -1,9 +1,9 @@
 
 ## 📊 Budget Tracker App
 
-A polished, front-end–focused budget tracking application built with React, designed to showcase clean state management, data visualization, and thoughtful UX.
+- A polished, front-end–focused budget tracking application built with React, designed to showcase clean state management, data visualization, and thoughtful UX.
 
-This project demonstrates how to take a simple idea and evolve it into a production-quality experience through iterative improvements.
+- This project demonstrates how to take a simple idea and evolve it into a production-quality experience through iterative improvements.
 
 
 
