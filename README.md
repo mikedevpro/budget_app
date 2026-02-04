@@ -1,7 +1,7 @@
 
 ## 📊 Budget Tracker App
 
-- A polished, front-end–focused budget tracking application built with React, designed to showcase clean state management, data visualization, and thoughtful UX.
+- A polished budget tracking app built with **React** that helps users log expenses, explore spending patterns, and stay organized with categories, filters, and charts. Built to showcase product thinking, clean state architecture, and UX polish.
 
 - This project demonstrates how to take a simple idea and evolve it into a production-quality experience through iterative improvements.
 
@@ -11,25 +11,40 @@
 
 ## ✨ Features
 - Add, categorize, and delete expenses
-- Persistent data using localStorage
+- Persistent data using `localStorage`
 - Filter expenses by category
-- Real-time spending summaries
-- Interactive charts:
-- Spending by category
-- Spending over time
-- 7 / 30 / All-time range toggle
-- Accessible, keyboard-friendly form controls
-- Toast notifications for user feedback
-- Responsive layout with polished UI states
+- Summary totals (overall + filtered views)
+- Charts (Recharts)
+  - Spending by category
+  - Spending over time
+  - 7 / 30 / All-time range toggle
+- UX polish
+  - Keyboard-friendly form flow (autofocus + refocus)
+  - Disabled submit until valid
+  - Toast notifications on add
+  - Accessible focus states and labeled inputs
 
 ## 🔗 Live Demo
-- (Coming soon — deployment in progress)
+- **Coming soon (deploying today).**
 
 ## 🛠️ Tech Stack
 - **React** (Hooks, functional components) 
 - **Recharts** for data visualization  
-- **CSS** (custom utility styles, no framework)
-- **LocalStorage** for persistance
+- **CSS** (lightweight custom styling)
+
+## Architecture Highlights
+- **Single source of truth**: `App.jsx` owns `expenses` state
+- **Derived state**: filtering, totals, and chart datasets are computed from base state
+- **Component boundaries**:
+  - `ExpenseForm` handles input + validation
+  - `ExpenseList` handles rendering + delete action
+  - `Charts` handles aggregation + visualization
+  - `Summary` handles totals
+
+  ## What This Project Demonstrates
+- Clean, scalable React patterns (derived state, memoization, component responsibility)
+- Data transformation for charts (grouping, sorting, time windows)
+- UX attention to detail (states, feedback, accessibility)
 
 ## 🧠 Design & Engineering Decisions
 **State Management**
