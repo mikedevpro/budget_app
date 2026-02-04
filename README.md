@@ -10,9 +10,27 @@ This project demonstrates how to take a simple idea and evolve it into a product
 > **Goal:** Showcase junior full-stack skills—component-driven UI, data flow, validation, and production-ready project structure.
 
 ## ✨ Features
-- Add expenses with basic validation
-- List and review spending entries
-- Clear, simple UI (easy to extend into categories/charts)
+- Add, categorize, and delete expenses
+
+- Persistent data using localStorage
+
+- Filter expenses by category
+
+- Real-time spending summaries
+
+- Interactive charts:
+
+- Spending by category
+
+- Spending over time
+
+- 7 / 30 / All-time range toggle
+
+- Accessible, keyboard-friendly form controls
+
+- Toast notifications for user feedback
+
+- Responsive layout with polished UI states
 
 ## 🔗 Live Demo
 Coming soon — deployment planned (Netlify/Vercel).
