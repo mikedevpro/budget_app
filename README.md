@@ -58,6 +58,12 @@ This project demonstrates how to take a simple idea and evolve it into a product
 - Debugging real-world React issues (props, rendering, scope)
 - Designing features incrementally instead of over-engineering
 
+## 🔮 Next Steps
+- Deploy live using Netlify or Vercel
+- Add Python-based analytics (CSV export + deeper insights)
+- Enhance chart interactivity and time grouping
+- Optional backend integration
+
 ## 📸 Screenshots
 ![Budget App UI](docs/screenshots/dashboard.png)
 ![Graphical info](docs/screenshots/graphs.png)
