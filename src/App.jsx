@@ -18,6 +18,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+
   const dismissToast = () => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToast(null);
@@ -121,6 +124,40 @@ export default function App() {
     }
   };
 
+  const handleImportCSV = async (file) => {
+  if (!file) return;
+
+  setError("");
+  setImportMsg("");
+  setImporting(true);
+
+  try {
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await fetch("http://localhost:8000/transactions/import", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new Error(data?.detail || "CSV import failed");
+    }
+
+    setImportMsg(`Imported ${data.inserted} transaction(s) ✅`);
+
+    // Refresh UI (expenses + insights)
+    await loadExpenses();
+    bumpRefreshToken();
+  } catch (e) {
+    setError(e.message || "CSV import failed");
+  } finally {
+    setImporting(false);
+  }
+};
+
+
   return (
     <div className="container">
       <header>
@@ -146,6 +183,26 @@ export default function App() {
         <div className="section-title">Add an expense</div>
         <ExpenseForm onAddExpense={handleAddExpense} />
       </div>
+
+      <div className="section card">
+        <div className="section-title">Import CSV</div>
+
+        <input
+          type="file"
+          accept=".csv,text/csv"
+          disabled={importing}
+          onChange={(e) => handleImportCSV(e.target.files?.[0])}
+       />
+
+       <div style={{ fontSize: "0.85rem", opacity: 0.8, marginTop: "0.5rem" }}>
+         CSV must include columns: <code>name</code>, <code>amount</code>, <code>category</code>
+       </div>
+
+       {importMsg ? (
+         <div style={{ marginTop: "0.5rem" }}>{importMsg}</div>
+       ) : null}
+     </div>
+
 
       <div className="section card">
         <div className="section-title">Filter</div>
