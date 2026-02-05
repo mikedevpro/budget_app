@@ -22,7 +22,7 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 
 | Dashboard | Add Expense | Filter + List |
 |---|---|---|
-| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![Filter + List](screenshots/filter-list.png) |
+| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![Filter + List](screenshots/filter-list.png) | ![Graphs] (screenshots/graphs.png) | (screenshots/graphs2.png) 
 
 
 ## 🧠 Architecture Overview
