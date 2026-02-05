@@ -1,4 +1,3 @@
-
 # Budget App (Full‑Stack)
 
 A full‑stack personal budgeting application built with **React** on the frontend and **Python (FastAPI)** on the backend. The app allows users to manually track expenses, filter by category, and view spending summaries and charts. Data is persisted via a Python API and SQLite database.
@@ -10,18 +9,17 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 ## ✨ Features
 
 * Add, view, filter, and delete expenses
-* Category‑based filtering
-* Real‑time summaries and charts
-* Persistent storage via backend API
-* Clean, accessible UI
-* Toast notifications for user feedback
-
----
+* Category-based filtering
+* Backend-powered summaries and charts
+* CSV import for bulk transactions
+* Persistent storage via FastAPI + SQLite
+* Clean, accessible UI with toast feedback
 
 ## 📸 Screenshots
 
-| Dashboard | Add Expense | Filter + List |
+| Dashboard | Add Expense | CSV Import |
 |---|---|---|
+<<<<<<< HEAD
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Add Expense](docs/screenshots/add-expense.png) | ![Filter + List](docs/screenshots/filter-list.png) | 
 
 
@@ -43,28 +41,36 @@ SQLite Database
 * **SQLite** provides lightweight, file‑based storage for development
 
 This separation mirrors real‑world full‑stack applications and makes the system easy to extend (authentication, CSV import, ML categorization, etc.).
+=======
+| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![CSV Import](screenshots/import.png) |
+>>>>>>> dd9c7b5849278737c3af10d6c429dc2a5bc99ac0
 
 ---
 
-## 🧱 Architecture
+## 🧠 Architecture Overview
 
 ```text
-React (CRA @ :3000)
-  - UI, forms, charts
-  - Calls backend via fetch()
+React (Frontend – CRA)
+  - UI, forms, filters, charts
+  - Fetch-based API client
 
-        HTTP JSON
+        HTTP / JSON
 
-FastAPI (Uvicorn @ :8000)
+FastAPI (Backend)
   - Validation (Pydantic)
-  - Persistence + analytics
-  - REST endpoints
+  - Business logic & analytics
+  - REST API
 
         SQL
 
-SQLite (budget.db)
+SQLite (Database)
   - expenses table
+  - persistent local storage
+```
 
+The frontend is intentionally thin and presentation-focused. All aggregation, validation, and persistence logic lives in the backend, mirroring real-world production architecture.
+
+---
 
 ## 🛠 Tech Stack
 
@@ -86,21 +92,17 @@ SQLite (budget.db)
 
 ## 📡 API Endpoints
 
-### Expenses
+| Method | Endpoint                       | Description               |      |                 |
+| ------ | ------------------------------ | ------------------------- | ---- | --------------- |
+| GET    | `/expenses`                    | Fetch all expenses        |      |                 |
+| POST   | `/expenses`                    | Create a new expense      |      |                 |
+| DELETE | `/expenses/{id}`               | Delete an expense         |      |                 |
+| GET    | `/insights/summary`            | Total, count, and average |      |                 |
+| GET    | `/insights/by-category?range=7 | 30                        | all` | Category totals |
+| GET    | `/insights/over-time?range=7   | 30                        | all` | Daily totals    |
+| POST   | `/transactions/import`         | Import expenses from CSV  |      |                 |
 
-* `GET /expenses` – Fetch all expenses
-* `POST /expenses` – Create a new expense
-* `DELETE /expenses/{id}` – Delete an expense
-* `PATCH /expenses/{id}` - Update an expense
-
-### Insights
-
-* `GET /insights/summary` – Total spent, count, and average expense
-* `GET /insights/by-category` – Aggregated totals per category
-* `GET /insights/over-time?range=7|30|all` | Daily totals 
-* `POST /transactions/import` | CSV import (v2)
-
-FastAPI provides interactive documentation at:
+Interactive API docs available at:
 
 ```
 http://localhost:8000/docs
@@ -162,30 +164,42 @@ http://localhost:3000
 
 ## 📈 Why This Project
 
-This app was built as a **flagship portfolio project** to demonstrate:
+This project was built as a **flagship portfolio application** to demonstrate practical full-stack engineering skills.
 
-* Full‑stack thinking
-* Clean API contracts
-* Frontend ↔ backend integration
-* Practical state management
-* Realistic project structure
+Key goals:
 
-Rather than focusing on complexity for its own sake, the goal was to build something **clear, extensible, and production‑adjacent**.
+* Clear frontend/backend separation
+* Backend-owned business logic
+* Realistic API design
+* Production-adjacent architecture
+
+Rather than maximizing features, the focus was on building something **clean, extensible, and explainable in an interview setting**.
 
 ---
 
 ## 🔮 Future Improvements
 
-* Move all analytics logic fully to the backend
-* CSV import for bank transactions
-* Rule‑based and ML‑assisted expense categorization
-* Authentication and multi‑user support
-* Deployment (Docker + cloud hosting)
+* Authentication and multi-user support
+* CSV column mapping and preview before import
+* Monthly budgeting and goal tracking
+* Automated category suggestions
+* Test database isolation for CI
+* Deployment with Docker and cloud hosting
+
+---
+
+## 🗣 Explaining This Project 
+
+> “This is a full-stack budget tracking application built with React and a Python FastAPI backend. The frontend is responsible only for UI and user interaction, while all validation, persistence, and analytics logic lives in the backend.
+>
+> I started with a frontend-only prototype, then progressively moved business logic into the API, including summaries, category aggregation, and time-series analytics. The backend exposes clean REST endpoints and persists data in SQLite.
+>
+> I also added CSV import support to simulate real-world transaction ingestion, and implemented optimistic UI updates with backend-driven refreshes for a responsive user experience.”
 
 ---
 
 ## 👤 Author
 
 **Michael Nobles**
-Career‑switching full‑stack developer with a focus on clean architecture and practical applications.
+Full-stack developer focused on clean architecture, clarity, and practical applications.
 
