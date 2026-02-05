@@ -6,6 +6,9 @@ import Charts from "./components/Charts";
 import { api } from "./api";
 
 export default function App() {
+  const [refreshToken, setRefreshToken] = useState(0); // Used to trigger refreshes if needed
+  const bumpRefreshToken = () => setRefreshToken((t) => t + 1);
+
   const [expenses, setExpenses] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState("All");
 
@@ -76,9 +79,9 @@ export default function App() {
 
     try {
       const created = await api.createExpense(payload);
-
       // Optimistic update (no refetch needed)
       setExpenses((prev) => [created, ...prev]);
+      bumpRefreshToken(); //✅ only on success
 
       setToast({
         title: "Expense Added ✅",
@@ -86,6 +89,7 @@ export default function App() {
       });
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       toastTimerRef.current = setTimeout(dismissToast, 2200);
+
     } catch (e) {
       setError(e.message || "Failed to add expense");
     }
@@ -94,14 +98,25 @@ export default function App() {
   const handleDeleteExpense = async (id) => {
     setError("");
     // Optimistic remove
-    const prev = expenses;
-    setExpenses((cur) => cur.filter((e) => e.id !== id));
+    let removed = null;
+    setExpenses((cur) => {
+      const next = [];
+      for (const e of cur) {
+        if (e.id === id) {
+          removed = e;
+        } else {
+          next.push(e);
+        }
+      }
+      return next;
+    });
 
     try {
       await api.deleteExpense(id);
+      bumpRefreshToken(); //✅ only on success
     } catch (e) {
       // Revert on failure
-      setExpenses(prev);
+      if (removed) setExpenses((cur) => [removed, ...cur]);
       setError(e.message || "Failed to delete expense");
     }
   };
@@ -152,12 +167,11 @@ export default function App() {
       </div>
 
       <div className="section card">
-        {/* Keeping your Summary as-is (it computes from expenses) */}
-        <Summary expenses={expenses} />
+        <Summary refreshToken={refreshToken} />
       </div>
 
       <div className="section card">
-        <Charts expenses={visibleExpenses} />
+        <Charts refreshToken={refreshToken} />
       </div>
 
       <div className="section card">

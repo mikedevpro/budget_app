@@ -1,12 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from pydantic import ConfigDict
 
+from sqlalchemy import cast, Date 
 from sqlalchemy import Column, DateTime, Float, String, create_engine, select, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -41,7 +42,7 @@ class ExpenseOut(BaseModel):
     amount: float
     category: str
     created_at: datetime = Field(alias="createdAt")
-    
+
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class SummaryOut(BaseModel):
@@ -51,6 +52,10 @@ class SummaryOut(BaseModel):
 
 class CategoryTotalOut(BaseModel):
     category: str
+    total: float
+
+class OverTimeOut(BaseModel):
+    date: str
     total: float
 
 app = FastAPI(title="Budget Insights API")
@@ -126,12 +131,34 @@ def summary():
         return SummaryOut(total_spent=float(total), expense_count=int(count), avg_expense=float(avg))
 
 @app.get("/insights/by-category", response_model=List[CategoryTotalOut])
-def by_category():
+def by_category(range: str = Query("30")):
     with SessionLocal() as db:
-        stmt = (
-            select(Expense.category, func.coalesce(func.sum(Expense.amount), 0.0).label("total"))
-            .group_by(Expense.category)
-            .order_by(func.sum(Expense.amount).desc())
-        )
+        stmt = select(Expense.category, func.coalesce(func.sum(Expense.amount), 0.0).label("total"))
+
+        if range != "all":
+            days = int(range)
+            cutoff = datetime.utcnow() - timedelta(days=days)
+            stmt = stmt.where(Expense.created_at >= cutoff)
+
+        stmt = stmt.group_by(Expense.category).order_by(func.sum(Expense.amount).desc())
+
         rows = db.execute(stmt).all()
-        return [{"category": r[0], "total": float(r[1])} for r in rows]
+        return [CategoryTotalOut(category=r[0], total=float(r[1])) for r in rows]
+
+@app.get("/insights/over-time", response_model=List[OverTimeOut])
+def over_time(range: str = Query("30")):
+    with SessionLocal() as db:
+        stmt = select(
+            func.strftime("%Y-%m-%d", Expense.created_at).label("date"),
+            func.coalesce(func.sum(Expense.amount), 0.0).label("total"),
+        )
+
+        if range != "all":
+            days = int(range)
+            cutoff = datetime.utcnow() - timedelta(days=days)
+            stmt = stmt.where(Expense.created_at >= cutoff)
+
+        stmt = stmt.group_by("date").order_by("date")
+
+        rows = db.execute(stmt).all()
+        return [OverTimeOut(date=r[0], total=float(r[1])) for r in rows]

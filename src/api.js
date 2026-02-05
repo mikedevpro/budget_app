@@ -21,16 +21,29 @@ async function request(path, options = {}) {
   return data;
 }
 
+const qs = (params) => {
+  const s = new URLSearchParams();
+  Object.entries(params || {}).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") s.set(k, String(v));
+  });
+  const out = s.toString();
+  return out ? `?${out}` : "";
+};
+
+
 export const api = {
-  listExpenses: () => request("/expenses"),
+  listExpenses: (params) => request(`/expenses${qs(params)}`),
   createExpense: (payload) =>
     request("/expenses", { method: "POST", body: JSON.stringify(payload) }),
   deleteExpense: (id) => request(`/expenses/${id}`, { method: "DELETE" }),
+  byCategory: (range) => request(`/insights/by-category${qs({ range })}`),
+  overTime: (range) => request(`/insights/over-time${qs({ range })}`),
+
 
   // optional later
   updateExpense: (id, payload) =>
     request(`/expenses/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
 
   summary: () => request("/insights/summary"),
-  byCategory: () => request("/insights/by-category"),
+  byCategory: (range) => request(`/insights/by-category${qs({ range })}`),
 };

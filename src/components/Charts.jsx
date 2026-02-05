@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,16 +10,11 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import { api } from "../api";
 
 function formatMoney(value) {
   const n = Number(value || 0);
   return `$${n.toFixed(2)}`;
-}
-
-function toISODate(dateValue) {
-  const d = new Date(dateValue);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
 function formatShortDate(yyyyMmDd) {
@@ -28,28 +23,75 @@ function formatShortDate(yyyyMmDd) {
   return dt.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
-export default function Charts({ expenses }) {
-  const safeExpenses = useMemo(
-    () => Array.isArray(expenses) ? expenses : [],
-    [expenses]
-  );
+export default function Charts({ refreshToken }) {
   const [range, setRange] = useState("30"); // "7", "30", "all"
 
-  const filteredForCharts = useMemo(() => {
-    if (range === "all") return safeExpenses;
+  const [byCategory, setByCategory] = useState([]);
+  const [overTime, setOverTime] = useState([]);
 
-    const days = Number(range);
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - days);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    return safeExpenses.filter((e) => {
-      const d = new Date(e.createdAt);
-      return !Number.isNaN(d.getTime()) && d >= cutoff;
-    });
-  }, [range, safeExpenses]);
+  const hasAnyData = useMemo(() => {
+    return (byCategory?.length || 0) > 0 || (overTime?.length || 0) > 0;
+  }, [byCategory, overTime]);
 
-  // If there are no expenses at all
-  if (safeExpenses.length === 0) {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function load() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const [cats, time] = await Promise.all([
+          api.byCategory(range),     // expects [{ category, total }]
+          api.overTime(range),       // expects [{ date: "YYYY-MM-DD", total }]
+        ]);
+
+        if (!isMounted) return;
+
+        setByCategory(
+          Array.isArray(cats)
+            ? cats
+                .map((x) => ({ category: x.category, total: Number(x.total || 0) }))
+                .sort((a, b) => b.total - a.total)
+            : []
+        );
+
+        setOverTime(
+          Array.isArray(time)
+            ? time
+                .map((x) => ({ date: x.date, total: Number(x.total || 0) }))
+                .sort((a, b) => a.date.localeCompare(b.date))
+            : []
+        );
+      } catch (e) {
+        if (isMounted) setError("Failed to load charts");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      isMounted = false;
+    };
+  }, [range, refreshToken]);
+
+  if (loading) {
+    return <div style={{ marginTop: "1rem", opacity: 0.8 }}>Loading insights…</div>;
+  }
+
+  if (error) {
+    return (
+      <div style={{ marginTop: "1rem", opacity: 0.9 }}>
+        <div style={{ color: "red" }}>{error}</div>
+      </div>
+    );
+  }
+
+  if (!hasAnyData) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8 }}>
         Add your first expense to unlock insights 📊
@@ -57,8 +99,7 @@ export default function Charts({ expenses }) {
     );
   }
 
-  // If there are expenses, but none in the selected time range
-  if (filteredForCharts.length === 0) {
+  if (byCategory.length === 0 && overTime.length === 0) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8 }}>
         No expenses in the selected range.
@@ -68,38 +109,6 @@ export default function Charts({ expenses }) {
       </div>
     );
   }
-
-  // 1) Category totals
-  const categoryMap = new Map();
-  for (const exp of filteredForCharts) {
-    const category = exp.category || "General";
-    const amt = Number(exp.amount || 0);
-    categoryMap.set(category, (categoryMap.get(category) || 0) + amt);
-  }
-
-  const byCategory = Array.from(categoryMap.entries())
-    .map(([category, total]) => ({
-      category,
-      total: Number(total.toFixed(2)),
-    }))
-    .sort((a, b) => b.total - a.total);
-
-  // 2) Daily totals (spending over time)
-  const dayMap = new Map();
-  for (const exp of filteredForCharts) {
-    const day = toISODate(exp.createdAt);
-    if (!day) continue;
-
-    const amt = Number(exp.amount || 0);
-    dayMap.set(day, (dayMap.get(day) || 0) + amt);
-  }
-
-  const overTime = Array.from(dayMap.entries())
-    .map(([date, total]) => ({
-      date,
-      total: Number(total.toFixed(2)),
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date));
 
   return (
     <div style={{ marginTop: "1rem", display: "grid", gap: "1rem" }}>
@@ -124,9 +133,7 @@ export default function Charts({ expenses }) {
 
       {/* Spending by Category */}
       <div style={{ padding: "1rem", border: "1px solid #e5e7eb", borderRadius: 12 }}>
-        <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>
-          Spending by Category
-        </div>
+        <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Spending by Category</div>
         <div style={{ width: "100%", height: 280 }}>
           <ResponsiveContainer>
             <BarChart data={byCategory} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
@@ -142,9 +149,7 @@ export default function Charts({ expenses }) {
 
       {/* Spending Over Time */}
       <div style={{ padding: "1rem", border: "1px solid #e5e7eb", borderRadius: 12 }}>
-        <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>
-          Spending Over Time
-        </div>
+        <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Spending Over Time</div>
         <div style={{ width: "100%", height: 280 }}>
           <ResponsiveContainer>
             <LineChart data={overTime} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
