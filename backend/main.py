@@ -5,6 +5,7 @@ from uuid import uuid4
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from pydantic import ConfigDict
 
 from sqlalchemy import Column, DateTime, Float, String, create_engine, select, func
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -39,10 +40,9 @@ class ExpenseOut(BaseModel):
     name: str
     amount: float
     category: str
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
+    created_at: datetime = Field(alias="createdAt")
+    
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class SummaryOut(BaseModel):
     total_spent: float
