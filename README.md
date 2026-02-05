@@ -18,6 +18,13 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 
 ---
 
+## 📸 Screenshots
+
+| Dashboard | Add Expense | Filter + List |
+|---|---|---|
+| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![Filter + List](screenshots/filter-list.png) |
+
+
 ## 🧠 Architecture Overview
 
 ```
@@ -38,6 +45,26 @@ SQLite Database
 This separation mirrors real‑world full‑stack applications and makes the system easy to extend (authentication, CSV import, ML categorization, etc.).
 
 ---
+
+## 🧱 Architecture
+
+```text
+React (CRA @ :3000)
+  - UI, forms, charts
+  - Calls backend via fetch()
+
+        HTTP JSON
+
+FastAPI (Uvicorn @ :8000)
+  - Validation (Pydantic)
+  - Persistence + analytics
+  - REST endpoints
+
+        SQL
+
+SQLite (budget.db)
+  - expenses table
+
 
 ## 🛠 Tech Stack
 
@@ -64,11 +91,14 @@ This separation mirrors real‑world full‑stack applications and makes the sys
 * `GET /expenses` – Fetch all expenses
 * `POST /expenses` – Create a new expense
 * `DELETE /expenses/{id}` – Delete an expense
+* `PATCH /expenses/{id}` - Update an expense
 
 ### Insights
 
 * `GET /insights/summary` – Total spent, count, and average expense
 * `GET /insights/by-category` – Aggregated totals per category
+* `GET /insights/over-time?range=7|30|all` | Daily totals 
+* `POST /transactions/import` | CSV import (v2)
 
 FastAPI provides interactive documentation at:
 
