@@ -19,7 +19,6 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 
 | Dashboard | Add Expense | CSV Import |
 |---|---|---|
-<<<<<<< HEAD
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Add Expense](docs/screenshots/add-expense.png) | ![Filter + List](docs/screenshots/filter-list.png) | 
 
 
@@ -41,9 +40,6 @@ SQLite Database
 * **SQLite** provides lightweight, file‑based storage for development
 
 This separation mirrors real‑world full‑stack applications and makes the system easy to extend (authentication, CSV import, ML categorization, etc.).
-=======
-| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![CSV Import](screenshots/import.png) |
->>>>>>> dd9c7b5849278737c3af10d6c429dc2a5bc99ac0
 
 ---
 
