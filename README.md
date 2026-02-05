@@ -17,7 +17,7 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 
 ## 📸 Screenshots
 
-| Dashboard | Add Expense | CSV Import |
+| Dashboard | Add Expense | Filter and list |
 |---|---|---|
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Add Expense](docs/screenshots/add-expense.png) | ![Filter + List](docs/screenshots/filter-list.png) | 
 
