@@ -1,100 +1,161 @@
 
-## 📊 Budget Tracker App
+# Budget App (Full‑Stack)
 
-- A polished budget tracking app built with **React** that helps users log expenses, explore spending patterns, and stay organized with categories, filters, and charts. Built to showcase product thinking, clean state architecture, and UX polish.
+A full‑stack personal budgeting application built with **React** on the frontend and **Python (FastAPI)** on the backend. The app allows users to manually track expenses, filter by category, and view spending summaries and charts. Data is persisted via a Python API and SQLite database.
 
-- This project demonstrates how to take a simple idea and evolve it into a production-quality experience through iterative improvements.
+This project was intentionally designed to demonstrate **clean frontend/backend separation**, real API design, and practical full‑stack architecture suitable for production‑style applications.
 
-
-
-> **Goal:** Showcase junior full-stack skills—component-driven UI, data flow, validation, and production-ready project structure.
+---
 
 ## ✨ Features
-- Add, categorize, and delete expenses
-- Persistent data using `localStorage`
-- Filter expenses by category
-- Summary totals (overall + filtered views)
-- Charts (Recharts)
-  - Spending by category
-  - Spending over time
-  - 7 / 30 / All-time range toggle
-- UX polish
-  - Keyboard-friendly form flow (autofocus + refocus)
-  - Disabled submit until valid
-  - Toast notifications on add
-  - Accessible focus states and labeled inputs
 
-## 🔗 Live Demo
-- https://budget-app-lake-omega.vercel.app
+* Add, view, filter, and delete expenses
+* Category‑based filtering
+* Real‑time summaries and charts
+* Persistent storage via backend API
+* Clean, accessible UI
+* Toast notifications for user feedback
 
-## 🛠️ Tech Stack
-- **React** (Hooks, functional components) 
-- **Recharts** for data visualization  
-- **CSS** (lightweight custom styling)
+---
 
-## Architecture Highlights
-- **Single source of truth**: `App.jsx` owns `expenses` state
-- **Derived state**: filtering, totals, and chart datasets are computed from base state
-- **Component boundaries**:
-  - `ExpenseForm` handles input + validation
-  - `ExpenseList` handles rendering + delete action
-  - `Charts` handles aggregation + visualization
-  - `Summary` handles totals
+## 🧠 Architecture Overview
 
-  ## What This Project Demonstrates
-- Clean, scalable React patterns (derived state, memoization, component responsibility)
-- Data transformation for charts (grouping, sorting, time windows)
-- UX attention to detail (states, feedback, accessibility)
+```
+React (Frontend)
+   │
+   │  HTTP (JSON)
+   ▼
+FastAPI (Backend)
+   │
+   ▼
+SQLite Database
+```
 
-## 🧠 Design & Engineering Decisions
-**State Management**
+* **Frontend (React)** handles UI, forms, filtering, and visualization
+* **Backend (FastAPI)** owns data persistence, validation, and analytics
+* **SQLite** provides lightweight, file‑based storage for development
 
-- App.jsx acts as the single source of truth for expenses
-- Derived data (filters, totals, charts) is computed from base state
-- Components are kept focused and reusable
+This separation mirrors real‑world full‑stack applications and makes the system easy to extend (authentication, CSV import, ML categorization, etc.).
 
-**UX & Accessibility**
+---
 
-- Keyboard-first form interaction (autofocus, Enter flow)
-- Disabled submit states prevent invalid actions
-- Clear empty states that explain what to do next
-- ARIA attributes and visible focus states for accessibility
+## 🛠 Tech Stack
 
-**Data Visualization**
+### Frontend
 
-- Charts use derived, memoized data
-- Time-based filtering implemented with useMemo
-- Graceful handling of empty or invalid data
+* React
+* JavaScript (ES6+)
+* HTML & CSS
 
-## 📈 What I Learned
-- Structuring React components around responsibility boundaries
-- Turning derived state into reusable, testable logic
-- Improving UX through micro-interactions and feedback
-- Debugging real-world React issues (props, rendering, scope)
-- Designing features incrementally instead of over-engineering
+### Backend
 
-## 🔮 Next Steps
-- Deploy live using Netlify or Vercel
-- Add Python-based analytics (CSV export + deeper insights)
-- Enhance chart interactivity and time grouping
-- Optional backend integration
+* Python 3.14
+* FastAPI
+* Pydantic (v2)
+* SQLAlchemy
+* SQLite
 
-## 📸 Screenshots
-![Budget App UI](docs/screenshots/dashboard.png)
-![Graphical info](docs/screenshots/graphs.png)
-![More Graphs!](docs/screenshots/graphs2.png)
-![More updates!](docs/screenshots/totalUpdates.png)
+---
 
-## 🚀 Getting Started
+## 📡 API Endpoints
+
+### Expenses
+
+* `GET /expenses` – Fetch all expenses
+* `POST /expenses` – Create a new expense
+* `DELETE /expenses/{id}` – Delete an expense
+
+### Insights
+
+* `GET /insights/summary` – Total spent, count, and average expense
+* `GET /insights/by-category` – Aggregated totals per category
+
+FastAPI provides interactive documentation at:
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+## 🚀 Running the Project Locally
+
 ### Prerequisites
-- Node.js (LTS recommended)
-- npm
 
-### Install dependencies
+* Node.js
+* Python 3.11+
+
+---
+
+### Backend Setup
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn main:app --reload --port 8000
+```
+
+Backend runs at:
+
+```
+http://localhost:8000
+```
+
+---
+
+### Frontend Setup
+
 ```bash
 npm install
 npm start
-http://localhost:3000
+```
 
-# Example environment variables (do not put secrets in here)
-# REACT_APP_API_URL=http://localhost:5000
+Frontend runs at:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🧪 Data Flow Example
+
+1. User submits an expense in the React UI
+2. React sends a `POST /expenses` request to FastAPI
+3. FastAPI validates and stores the expense in SQLite
+4. React fetches updated data via `GET /expenses`
+5. Charts and summaries re‑render automatically
+
+---
+
+## 📈 Why This Project
+
+This app was built as a **flagship portfolio project** to demonstrate:
+
+* Full‑stack thinking
+* Clean API contracts
+* Frontend ↔ backend integration
+* Practical state management
+* Realistic project structure
+
+Rather than focusing on complexity for its own sake, the goal was to build something **clear, extensible, and production‑adjacent**.
+
+---
+
+## 🔮 Future Improvements
+
+* Move all analytics logic fully to the backend
+* CSV import for bank transactions
+* Rule‑based and ML‑assisted expense categorization
+* Authentication and multi‑user support
+* Deployment (Docker + cloud hosting)
+
+---
+
+## 👤 Author
+
+**Michael Nobles**
+Career‑switching full‑stack developer with a focus on clean architecture and practical applications.
+
