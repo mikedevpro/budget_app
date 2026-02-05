@@ -15,6 +15,12 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 * Persistent storage via FastAPI + SQLite
 * Clean, accessible UI with toast feedback
 
+## 📸 Screenshots
+
+| Dashboard | Add Expense | CSV Import |
+|---|---|---|
+| ![Dashboard](screenshots/dashboard.png) | ![Add Expense](screenshots/add-expense.png) | ![CSV Import](screenshots/import.png) |
+
 ---
 
 ## 🧠 Architecture Overview
