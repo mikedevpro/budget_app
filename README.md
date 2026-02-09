@@ -15,6 +15,9 @@ This project was intentionally designed to demonstrate **clean frontend/backend 
 * Persistent storage via FastAPI + SQLite
 * Clean, accessible UI with toast feedback
 
+## 🔗 Live Demo: https://budget-app-lake-omega.vercel.app/
+
+
 ## 📸 Screenshots
 
 | Dashboard | Add Expense | Filter and list |
