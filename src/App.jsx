@@ -45,7 +45,7 @@ export default function App() {
     setLoading(true);
     try {
       const list = await api.listExpenses();
-      setExpenses(list);
+      setExpenses(Array.isArray(list) ? list : []);
     } catch (e) {
       setError(e.message || "Failed to load expenses");
     } finally {
@@ -57,15 +57,17 @@ export default function App() {
     loadExpenses();
   }, []);
 
+  const safeExpenses = Array.isArray(expenses) ? expenses : [];
+
   const categories = [
     "All",
-    ...Array.from(new Set(expenses.map((e) => e.category || "General"))),
+    ...Array.from(new Set(safeExpenses.map((e) => e.category || "General"))),
   ];
 
   const visibleExpenses =
     categoryFilter === "All"
-      ? expenses
-      : expenses.filter((e) => (e.category || "General") === categoryFilter);
+      ? safeExpenses
+      : safeExpenses.filter((e) => (e.category || "General") === categoryFilter);
 
   const handleAddExpense = async (newExpense) => {
     setError("");
