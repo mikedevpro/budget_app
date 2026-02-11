@@ -1,10 +1,4 @@
-import type { Expense } from "../types/expense";
-
-type SummaryProps = {
-  expenses: Expense[];
-};
-
-export default function Summary({ expenses }: SummaryProps) {
+export default function Summary ({ expenses = [] }) {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
