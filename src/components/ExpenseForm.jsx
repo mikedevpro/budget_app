@@ -30,11 +30,11 @@ export default function ExpenseForm({ onAddExpense }) {
     setError('');
 
     onAddExpense({
-      // id: crypto.randomUUID(),
+      id: crypto.randomUUID(),
       name: trimmed,
       amount: Number(numericAmount.toFixed(2)),
       category,
-      // createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     });
 
     setName('');

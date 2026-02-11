@@ -224,7 +224,7 @@ export default function App() {
       </div>
 
       <div className="section card">
-        <Summary refreshToken={refreshToken} />
+        <Summary expenses={expenses} />
       </div>
 
       <div className="section card">
