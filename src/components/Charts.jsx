@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -11,17 +11,7 @@ import {
   Line,
 } from "recharts";
 import { api } from "../api";
-
-function formatMoney(value) {
-  const n = Number(value || 0);
-  return `$${n.toFixed(2)}`;
-}
-
-function formatShortDate(yyyyMmDd) {
-  const [y, m, d] = yyyyMmDd.split("-").map(Number);
-  const dt = new Date(y, m - 1, d);
-  return dt.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
+import { formatMoney, formatShortDate } from "../utils/format";
 
 export default function Charts({ refreshToken }) {
   const [range, setRange] = useState("30"); // "7", "30", "all"
@@ -32,6 +22,11 @@ export default function Charts({ refreshToken }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
+
+  const hasLoadedOnceRef = useRef(false);
+
   const hasAnyData = useMemo(() => {
     return (byCategory?.length || 0) > 0 || (overTime?.length || 0) > 0;
   }, [byCategory, overTime]);
@@ -40,24 +35,32 @@ export default function Charts({ refreshToken }) {
     let isMounted = true;
 
     async function load() {
-      setLoading(true);
+      if (!hasLoadedOnceRef.current) setLoading(true);
+      setIsRefreshing(true);
       setError("");
 
       try {
-        const [cats, time] = await Promise.all([
-          api.byCategory(range),     // expects [{ category, total }]
-          api.overTime(range),       // expects [{ date: "YYYY-MM-DD", total }]
-        ]);
+        const { byCategory: cats, overTime: time } = await api.insights(range);
 
         if (!isMounted) return;
 
-        setByCategory(
-          Array.isArray(cats)
-            ? cats
-                .map((x) => ({ category: x.category, total: Number(x.total || 0) }))
-                .sort((a, b) => b.total - a.total)
-            : []
-        );
+        if (Array.isArray(cats)) {
+          const sorted = cats
+            .map((x) => ({ category: x.category, total: Number(x.total || 0) }))
+            .sort((a, b) => b.total - a.total);
+
+          const top = sorted.slice(0, 9);
+          const rest = sorted.slice(9);
+          const otherTotal = Number(
+            rest.reduce((sum, x) => sum + x.total, 0).toFixed(2)
+          );
+
+          setByCategory(
+            otherTotal > 0 ? [...top, { category: "Other", total: otherTotal }] : top
+          );
+        } else {
+          setByCategory([]);
+        }
 
         setOverTime(
           Array.isArray(time)
@@ -69,7 +72,12 @@ export default function Charts({ refreshToken }) {
       } catch (e) {
         if (isMounted) setError("Failed to load charts");
       } finally {
-        if (isMounted) setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+          setIsRefreshing(false);
+          hasLoadedOnceRef.current = true;
+          setLastUpdated(new Date());
+        }
       }
     }
 
@@ -79,8 +87,17 @@ export default function Charts({ refreshToken }) {
     };
   }, [range, refreshToken]);
 
+  
+
+
   if (loading) {
-    return <div style={{ marginTop: "1rem", opacity: 0.8 }}>Loading insights…</div>;
+    return (
+      <div style={{ marginTop: "1rem", display: "grid", gap: "1rem" }}>
+        <div style={{ height: 44, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
+        <div style={{ height: 320, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
+        <div style={{ height: 320, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
+      </div>
+    );
   }
 
   if (error) {
@@ -95,6 +112,14 @@ export default function Charts({ refreshToken }) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8 }}>
         Add your first expense to unlock insights 📊
+        <div style={{ marginTop: "0.75rem" }}>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            Add an expense
+          </button>
+        </div>
       </div>
     );
   }
@@ -115,14 +140,28 @@ export default function Charts({ refreshToken }) {
       {/* Header + range control */}
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
         <div style={{ fontWeight: 700 }}>Charts</div>
+
+        {isRefreshing && (
+          <div style={{ fontSize: "0.85rem", opacity: 0.7 }}>Updating…</div>
+        )}
+
+        {!isRefreshing && lastUpdated && (
+          <div style={{ fontSize: "0.85rem", opacity: 0.6 }}>
+            Updated {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </div>
+        )}
+
         <select
           value={range}
+          disabled={isRefreshing}
           onChange={(e) => setRange(e.target.value)}
           style={{
             marginLeft: "auto",
             padding: "0.4rem",
             borderRadius: 8,
             border: "1px solid #e5e7eb",
+            opacity: isRefreshing ? 0.7 : 1,
+            cursor: isRefreshing ? "not-allowed" : "pointer",
           }}
         >
           <option value="7">Last 7 days</option>
@@ -138,9 +177,11 @@ export default function Charts({ refreshToken }) {
           <ResponsiveContainer>
             <BarChart data={byCategory} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="category" />
+              <XAxis dataKey="category" interval={0} angle={-15} textAnchor="end" height={50} />
               <YAxis tickFormatter={formatMoney} />
-              <Tooltip formatter={(v) => formatMoney(v)} />
+              <Tooltip formatter={(v) => formatMoney(v)} 
+                contentStyle={{ borderRadius: 12, border: "1px solid #e5e7eb" }}
+              />
               <Bar dataKey="total" />
             </BarChart>
           </ResponsiveContainer>
@@ -158,9 +199,10 @@ export default function Charts({ refreshToken }) {
               <YAxis tickFormatter={formatMoney} />
               <Tooltip
                 formatter={(v) => formatMoney(v)}
+                contentStyle={{ borderRadius: 12, border: "1px solid #e5e7eb" }}
                 labelFormatter={(label) => formatShortDate(label)}
               />
-              <Line type="monotone" dataKey="total" dot />
+              <Line type="monotone" dataKey="total" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -168,4 +210,3 @@ export default function Charts({ refreshToken }) {
     </div>
   );
 }
-

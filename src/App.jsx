@@ -74,9 +74,11 @@ export default function App() {
 
     // Be flexible: if ExpenseForm currently creates id/createdAt, we ignore them.
     const payload = {
+      id: crypto.randomUUID(),
       name: (newExpense?.name || "").trim(),
       amount: Number(newExpense?.amount),
       category: (newExpense?.category || "General").trim(),
+      createdAt: new Date().toISOString(),
     };
 
     if (!payload.name) return;
