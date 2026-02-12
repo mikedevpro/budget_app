@@ -1,13 +1,15 @@
-from datetime import datetime, timedelta
+import csv
+import io
+import os
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from pydantic import ConfigDict
 
-from sqlalchemy import cast, Date 
 from sqlalchemy import Column, DateTime, Float, String, create_engine, select, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -22,7 +24,7 @@ class Expense(Base):
     name = Column(String, nullable=False)
     amount = Column(Float, nullable=False)
     category = Column(String, nullable=False, default="General")
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
 Base.metadata.create_all(bind=engine)
 
@@ -58,13 +60,25 @@ class OverTimeOut(BaseModel):
     date: str
     total: float
 
+class InsightsOut(BaseModel):
+    by_category: List[CategoryTotalOut]
+    over_time: List[OverTimeOut]
+
 app = FastAPI(title="Budget Insights API")
 
-# Works for CRA (3000) or Vite (5173)
+def parse_cors_origins():
+    default = "http://localhost:3000,http://localhost:5173"
+    raw = os.getenv("CORS_ALLOW_ORIGINS", default)
+    origins = [o.strip() for o in raw.split(",") if o.strip()]
+    return origins or default.split(",")
+
+cors_origins = parse_cors_origins()
+
+# Works for CRA (3000) or Vite (5173) by default; override with CORS_ALLOW_ORIGINS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials="*" not in cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -80,14 +94,14 @@ def list_expenses():
         return db.execute(stmt).scalars().all()
 
 @app.post("/expenses", response_model=ExpenseOut, status_code=201)
-def create_expense(payload: ExpenseCreate):
+def create_expense(payload: ExpenseIn):
     with SessionLocal() as db:
         exp = Expense(
             id=str(uuid4()),
             name=payload.name.strip(),
             amount=float(payload.amount),
             category=payload.category.strip(),
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
         )
         db.add(exp)
         db.commit()
@@ -137,7 +151,7 @@ def by_category(range: str = Query("30")):
 
         if range != "all":
             days = int(range)
-            cutoff = datetime.utcnow() - timedelta(days=days)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=days)
             stmt = stmt.where(Expense.created_at >= cutoff)
 
         stmt = stmt.group_by(Expense.category).order_by(func.sum(Expense.amount).desc())
@@ -155,12 +169,60 @@ def over_time(range: str = Query("30")):
 
         if range != "all":
             days = int(range)
-            cutoff = datetime.utcnow() - timedelta(days=days)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=days)
             stmt = stmt.where(Expense.created_at >= cutoff)
 
         stmt = stmt.group_by("date").order_by("date")
 
         rows = db.execute(stmt).all()
         return [OverTimeOut(date=r[0], total=float(r[1])) for r in rows]
-    
-    app = FastAPI(title="Budget Insights API")
+
+@app.get("/insights", response_model=InsightsOut)
+def insights(range: str = Query("30")):
+    return InsightsOut(
+        by_category=by_category(range),
+        over_time=over_time(range),
+    )
+
+@app.post("/transactions/import")
+async def import_transactions(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Please upload a .csv file")
+
+    content = await file.read()
+    text = content.decode("utf-8", errors="replace")
+    reader = csv.DictReader(io.StringIO(text))
+
+    required = {"name", "amount", "category"}
+    if not required.issubset(set(reader.fieldnames or [])):
+        raise HTTPException(
+            status_code=400,
+            detail="CSV must include columns: name, amount, category",
+        )
+
+    inserted = 0
+    with SessionLocal() as db:
+        for row in reader:
+            name = (row.get("name") or "").strip()
+            category = (row.get("category") or "General").strip()
+            try:
+                amount = float(row.get("amount"))
+            except (TypeError, ValueError):
+                continue
+
+            if not name or amount <= 0:
+                continue
+
+            exp = Expense(
+                id=str(uuid4()),
+                name=name,
+                amount=amount,
+                category=category or "General",
+                created_at=datetime.now(timezone.utc),
+            )
+            db.add(exp)
+            inserted += 1
+
+        db.commit()
+
+    return {"inserted": inserted}

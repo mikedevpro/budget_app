@@ -156,7 +156,7 @@ export default function Charts({ refreshToken }) {
     );
   }
 
-  if (!hasAnyData) {
+  if (!hasAnyData && range === "all") {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8, color: "var(--muted)" }}>
         Add your first expense to unlock insights 📊
@@ -172,7 +172,7 @@ export default function Charts({ refreshToken }) {
     );
   }
 
-  if (byCategory.length === 0 && overTime.length === 0) {
+  if (!hasAnyData) {
     return (
       <div style={{ marginTop: "1rem", opacity: 0.8, color: "var(--muted)" }}>
         No expenses in the selected range.

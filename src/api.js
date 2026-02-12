@@ -63,9 +63,10 @@ function toYyyyMmDd(date) {
 
 // ---------- backend request ----------
 async function request(path, options = {}) {
+  const isFormData = options.body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(options.headers || {}),
     },
     ...options,
@@ -190,6 +191,15 @@ export const api = {
   summary: async (range = "all") => {
     if (MODE === "backend") return request(`/insights/summary${qs({ range })}`);
     return localSummary(range);
+  },
+
+  importTransactions: async (file) => {
+    if (MODE !== "backend") {
+      throw new Error("CSV import is only available in backend mode");
+    }
+    const form = new FormData();
+    form.append("file", file);
+    return request("/transactions/import", { method: "POST", body: form });
   },
 
   insights: getInsights,

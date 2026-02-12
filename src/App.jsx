@@ -144,18 +144,7 @@ export default function App() {
   setImporting(true);
 
   try {
-    const form = new FormData();
-    form.append("file", file);
-
-    const res = await fetch("http://localhost:8000/transactions/import", {
-      method: "POST",
-      body: form,
-    });
-
-    const data = await res.json().catch(() => null);
-    if (!res.ok) {
-      throw new Error(data?.detail || "CSV import failed");
-    }
+    const data = await api.importTransactions(file);
 
     setImportMsg(`Imported ${data.inserted} transaction(s) ✅`);
 
