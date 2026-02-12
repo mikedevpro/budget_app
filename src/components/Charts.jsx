@@ -11,7 +11,49 @@ import {
   Line,
 } from "recharts";
 import { api } from "../api";
-import { formatMoney, formatShortDate } from "../utils/format";
+import { formatMoney, formatMoneyCompact, formatShortDate } from "../utils/format";
+
+function escapeCsv(value) {
+  const s = String(value ?? "");
+  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+function buildInsightsCsv({ range, byCategory, overTime }) {
+  const lines = [];
+
+  lines.push(`Range,${escapeCsv(range)}`);
+  lines.push("");
+
+  lines.push("Spending by Category");
+  lines.push("category,total");
+  for (const row of byCategory || []) {
+    lines.push(`${escapeCsv(row.category)},${escapeCsv(Number(row.total || 0).toFixed(2))}`);
+  }
+
+  lines.push("");
+  lines.push("Spending Over Time");
+  lines.push("date,total");
+  for (const row of overTime || []) {
+    lines.push(`${escapeCsv(row.date)},${escapeCsv(Number(row.total || 0).toFixed(2))}`);
+  }
+
+  return lines.join("\n");
+}
+
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
 
 export default function Charts({ refreshToken }) {
   const [range, setRange] = useState("30"); // "7", "30", "all"
@@ -30,6 +72,12 @@ export default function Charts({ refreshToken }) {
   const hasAnyData = useMemo(() => {
     return (byCategory?.length || 0) > 0 || (overTime?.length || 0) > 0;
   }, [byCategory, overTime]);
+
+  const handleExportCsv = () => {
+    const csv = buildInsightsCsv({ range, byCategory, overTime });
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadTextFile(`budget-insights-${range}-${stamp}.csv`, csv);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -93,9 +141,9 @@ export default function Charts({ refreshToken }) {
   if (loading) {
     return (
       <div style={{ marginTop: "1rem", display: "grid", gap: "1rem" }}>
-        <div style={{ height: 44, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
-        <div style={{ height: 320, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
-        <div style={{ height: 320, borderRadius: 12, border: "1px solid #e5e7eb", opacity: 0.6 }} />
+        <div style={{ height: 44, borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)", opacity: 0.6 }} />
+        <div style={{ height: 320, borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)", opacity: 0.6 }} />
+        <div style={{ height: 320, borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)", opacity: 0.6 }} />
       </div>
     );
   }
@@ -110,7 +158,7 @@ export default function Charts({ refreshToken }) {
 
   if (!hasAnyData) {
     return (
-      <div style={{ marginTop: "1rem", opacity: 0.8 }}>
+      <div style={{ marginTop: "1rem", opacity: 0.8, color: "var(--muted)" }}>
         Add your first expense to unlock insights 📊
         <div style={{ marginTop: "0.75rem" }}>
           <button
@@ -126,9 +174,9 @@ export default function Charts({ refreshToken }) {
 
   if (byCategory.length === 0 && overTime.length === 0) {
     return (
-      <div style={{ marginTop: "1rem", opacity: 0.8 }}>
+      <div style={{ marginTop: "1rem", opacity: 0.8, color: "var(--muted)" }}>
         No expenses in the selected range.
-        <div style={{ fontSize: "0.85rem", marginTop: "0.25rem" }}>
+        <div style={{ fontSize: "0.85rem", marginTop: "0.25rem", color: "var(--muted)" }}>
           Try expanding the range or add more expenses.
         </div>
       </div>
@@ -142,11 +190,11 @@ export default function Charts({ refreshToken }) {
         <div style={{ fontWeight: 700 }}>Charts</div>
 
         {isRefreshing && (
-          <div style={{ fontSize: "0.85rem", opacity: 0.7 }}>Updating…</div>
+          <div style={{ fontSize: "0.85rem", opacity: 0.7, color: "var(--muted)" }}>Updating…</div>
         )}
 
         {!isRefreshing && lastUpdated && (
-          <div style={{ fontSize: "0.85rem", opacity: 0.6 }}>
+          <div style={{ fontSize: "0.85rem", opacity: 0.6, color: "var(--muted)" }}>
             Updated {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         )}
@@ -159,7 +207,9 @@ export default function Charts({ refreshToken }) {
             marginLeft: "auto",
             padding: "0.4rem",
             borderRadius: 8,
-            border: "1px solid #e5e7eb",
+            border: "1px solid var(--border)",
+            background: "var(--card)",
+            color: "var(--text)",
             opacity: isRefreshing ? 0.7 : 1,
             cursor: isRefreshing ? "not-allowed" : "pointer",
           }}
@@ -168,19 +218,36 @@ export default function Charts({ refreshToken }) {
           <option value="30">Last 30 days</option>
           <option value="all">All time</option>
         </select>
+
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          disabled={!hasAnyData}
+          style={{
+            padding: "0.4rem 0.6rem",
+            borderRadius: 10,
+            border: "1px solid var(--border)",
+            background: "var(--card)",
+            color: "var(--text)",
+            cursor: hasAnyData ? "pointer" : "not-allowed",
+            opacity: hasAnyData ? 1 : 0.6,
+          }}
+        >
+          Export CSV
+        </button>
       </div>
 
       {/* Spending by Category */}
-      <div style={{ padding: "1rem", border: "1px solid #e5e7eb", borderRadius: 12 }}>
+      <div className="card card-hover" style={{ padding: "1rem" }}>
         <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Spending by Category</div>
         <div style={{ width: "100%", height: 280 }}>
           <ResponsiveContainer>
             <BarChart data={byCategory} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="category" interval={0} angle={-15} textAnchor="end" height={50} />
-              <YAxis tickFormatter={formatMoney} />
+              <YAxis tickFormatter={formatMoneyCompact} />
               <Tooltip formatter={(v) => formatMoney(v)} 
-                contentStyle={{ borderRadius: 12, border: "1px solid #e5e7eb" }}
+                contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)", color: "var(--text)" }}
               />
               <Bar dataKey="total" />
             </BarChart>
@@ -189,17 +256,18 @@ export default function Charts({ refreshToken }) {
       </div>
 
       {/* Spending Over Time */}
-      <div style={{ padding: "1rem", border: "1px solid #e5e7eb", borderRadius: 12 }}>
+      <div className="card card-hover" style={{ padding: "1rem" }}>
+
         <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Spending Over Time</div>
         <div style={{ width: "100%", height: 280 }}>
           <ResponsiveContainer>
             <LineChart data={overTime} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" tickFormatter={formatShortDate} />
-              <YAxis tickFormatter={formatMoney} />
+              <YAxis tickFormatter={formatMoneyCompact} />
               <Tooltip
                 formatter={(v) => formatMoney(v)}
-                contentStyle={{ borderRadius: 12, border: "1px solid #e5e7eb" }}
+                contentStyle={{ borderRadius: 12, border: "1px solid var(--border)", background: "var(--card)", color: "var(--text)" }}
                 labelFormatter={(label) => formatShortDate(label)}
               />
               <Line type="monotone" dataKey="total" dot={false} />

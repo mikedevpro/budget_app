@@ -11,6 +11,9 @@ export default function App() {
 
   const [expenses, setExpenses] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
 
   const [toast, setToast] = useState(null);
   const toastTimerRef = useRef(null);
@@ -39,6 +42,11 @@ export default function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const loadExpenses = async () => {
     setError("");
@@ -164,9 +172,27 @@ export default function App() {
 
   return (
     <div className="container">
-      <header>
-        <h1 style={{ marginBottom: "0.25rem" }}>My Budget App</h1>
-        <p className="section-subtitle">Track your monthly expenses</p>
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+          marginBottom: "1.5rem",
+        }}
+      >
+        <div>
+          <h1 style={{ marginBottom: "0.25rem" }}>My Budget App</h1>
+          <p className="section-subtitle">Track your monthly expenses</p>
+        </div>
+
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        >
+          {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
       </header>
 
       {error ? (
