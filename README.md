@@ -1,6 +1,8 @@
 # Budget App (Full-Stack)
 
-A full-stack personal budgeting application with a React frontend and a FastAPI backend.
+Budget App is a full-stack expense tracking application built to demonstrate clean system design, practical API development, and thoughtful frontend UX.
+
+It helps users capture everyday spending, analyze trends through charts and summaries, and import transactions from CSV. The frontend is built with React, while FastAPI and SQLite power validation, persistence, and analytics on the backend.
 
 ## 🔗 Live Demo: https://budget-app-lake-omega.vercel.app/
 
