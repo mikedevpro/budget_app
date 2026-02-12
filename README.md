@@ -2,6 +2,16 @@
 
 A full-stack personal budgeting application with a React frontend and a FastAPI backend.
 
+## 🔗 Live Demo: https://budget-app-lake-omega.vercel.app/
+
+
+
+## 📸 Screenshots
+
+| Dashboard | Add Expense | Filter and list |
+|---|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Add Expense](docs/screenshots/add-expense.png) | ![Filter + List](docs/screenshots/filter-list.png) | 
+
 ## ✨ Features
 - Add, edit, delete, and list expenses
 - Category filtering
@@ -19,6 +29,14 @@ FastAPI
   -> SQLAlchemy
 SQLite
 ```
+
+* **Frontend (React)** handles UI, forms, filtering, and visualization
+* **Backend (FastAPI)** owns data persistence, validation, and analytics
+* **SQLite** provides lightweight, file-based storage for development
+
+This separation mirrors real-world full-stack applications and makes the system easy to extend (authentication, CSV import, ML categorization, etc.). 
+
+The frontend is intentionally thin and presentation-focused. All aggregation, validation, and persistence logic lives in the backend, mirroring real-world production architecture.
 
 ## 🛠 Tech Stack
 - Frontend: React, JavaScript, CSS
@@ -102,3 +120,46 @@ Run backend tests from project root:
 ## 📝 Notes
 - CSV import is available in `backend` mode.
 - In `local` mode, expenses/insights use `localStorage`.
+
+---
+
+## 📈 Why This Project
+
+This project was built as a **flagship portfolio application** to demonstrate practical full-stack engineering skills.
+
+Key goals:
+
+* Clear frontend/backend separation
+* Backend-owned business logic
+* Realistic API design
+* Production-adjacent architecture
+
+Rather than maximizing features, the focus was on building something **clean, extensible, and explainable in an interview setting**.
+
+---
+
+## 🔮 Future Improvements
+
+* Authentication and multi-user support
+* CSV column mapping and preview before import
+* Monthly budgeting and goal tracking
+* Automated category suggestions
+* Test database isolation for CI
+* Deployment with Docker and cloud hosting
+
+---
+
+## 🗣 Explaining This Project
+
+> “This is a full-stack budget tracking application built with React and a Python FastAPI backend. The frontend is responsible only for UI and user interaction, while all validation, persistence, and analytics logic lives in the backend.
+>
+> I started with a frontend-only prototype, then progressively moved business logic into the API, including summaries, category aggregation, and time-series analytics. The backend exposes clean REST endpoints and persists data in SQLite.
+>
+> I also added CSV import support to simulate real-world transaction ingestion, and implemented optimistic UI updates with backend-driven refreshes for a responsive user experience.”
+
+---
+
+## 👤 Author
+
+**Michael Nobles**
+Full-stack developer focused on clean architecture, clarity, and practical applications.
