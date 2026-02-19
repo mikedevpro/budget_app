@@ -1,5 +1,5 @@
 const MODE = (process.env.REACT_APP_API_MODE || "local").toLowerCase(); // "local" | "backend"
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8000";
+const API_BASE = process.env.VITE_API_URL || process.env.REACT_APP_API_BASE || "http://localhost:8000";
 const KEY = "expenses";
 
 const qs = (params) => {

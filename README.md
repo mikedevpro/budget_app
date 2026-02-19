@@ -118,6 +118,7 @@ Frontend `.env`:
 
 REACT_APP_API_MODE=backend
 REACT_APP_API_BASE=http://localhost:8000
+VITE_API_URL=http://localhost:8000
 
 
 Backend:
@@ -172,4 +173,3 @@ The emphasis was clarity and extensibility — not feature sprawl.
 
 Michael Nobles  
 Full-stack developer focused on clean architecture and practical systems.
-

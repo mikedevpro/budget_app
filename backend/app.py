@@ -66,19 +66,12 @@ class InsightsOut(BaseModel):
 
 app = FastAPI(title="Budget Insights API")
 
-def parse_cors_origins():
-    default = "http://localhost:3000,http://localhost:5173"
-    raw = os.getenv("CORS_ALLOW_ORIGINS", default)
-    origins = [o.strip() for o in raw.split(",") if o.strip()]
-    return origins or default.split(",")
+origins = os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
 
-cors_origins = parse_cors_origins()
-
-# Works for CRA (3000) or Vite (5173) by default; override with CORS_ALLOW_ORIGINS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials="*" not in cors_origins,
+    allow_origins=[o.strip() for o in origins if o.strip()],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
