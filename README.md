@@ -4,7 +4,10 @@ A production-style expense tracking application built to demonstrate clean syste
 
 Originally built as a frontend-only React app, it evolved into a full-stack architecture with FastAPI handling validation, persistence, and analytics.
 
-🔗 Live Demo → https://budget-app-lake-omega.vercel.app/
+## 🌍 Live Demo
+
+Frontend: https://budget-app-lake-omega.vercel.app  
+Backend API: https://your-render-service.onrender.com/docs
 
 ---
 

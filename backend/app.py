@@ -66,11 +66,15 @@ class InsightsOut(BaseModel):
 
 app = FastAPI(title="Budget Insights API")
 
-origins = os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
+origins_env = os.getenv("CORS_ALLOW_ORIGINS")
+if origins_env:
+    origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+else:
+    origins = ["http://localhost:5173"]  # safe local default
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in origins if o.strip()],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
