@@ -1,5 +1,5 @@
 const MODE = (process.env.REACT_APP_API_MODE || "local").toLowerCase(); // "local" | "backend"
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
 const KEY = "expenses";
 
 const qs = (params) => {
@@ -61,7 +61,12 @@ function toYyyyMmDd(date) {
   return `${y}-${m}-${d}`;
 }
 
-// ---------- backend request ----------
+/**
+ * @template T
+ * @param {string} path
+ * @param {RequestInit} [options]
+ * @returns {Promise<T | null>}
+ */
 async function request(path, options = {}) {
   const isFormData = options.body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
@@ -238,7 +243,7 @@ export const api = {
     };
   },
 
-  emotionRaw: fetchEmotionInsight,
+  emotionRaw: () => fetchEmotionInsight(),
 
   insights: getInsights,
 };

@@ -1,39 +1,29 @@
-import os
-import sqlite3
-from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Query
+try:
+    from main import SessionLocal, Expense
+except ImportError:
+    from ..main import SessionLocal, Expense
 
-from app.services.emotion_insights import build_emotion_insight
+try:
+    from app.services.emotion_insights import build_emotion_insight
+except ImportError:
+    from ..services.emotion_insights import build_emotion_insight
 
-router = APIRouter()
-
-DB_PATH = os.getenv("DB_PATH", "budget.db")
+router = APIRouter(prefix="/insights", tags=["emotion"])
 
 
 @router.get("/emotion")
-def get_emotion_insight(range: str = Query("30")):
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.row_factory = sqlite3.Row
-        query = "SELECT amount, category FROM expenses"
-        params: tuple = ()
+def get_emotion_insight():
+    with SessionLocal() as db:
+        expenses = db.query(Expense).all()
 
-        if range != "all":
-            days = int(range)
-            cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-            query += " WHERE created_at >= ?"
-            params = (cutoff.isoformat(sep=\" \"),)
+        serialized_expenses = [
+            {
+                "amount": expense.amount,
+                "category": expense.category,
+            }
+            for expense in expenses
+        ]
 
-        expenses = conn.execute(query, params).fetchall()
-
-    expense_payload = [
-        {"amount": float(row["amount"]), "category": row["category"] or "Other"}
-        for row in expenses
-    ]
-
-    return build_emotion_insight(expense_payload)
-
-
-@router.get("/insights/emotion")
-def get_insight_by_range(range: str = Query("30")):
-    return get_emotion_insight(range)
+    return build_emotion_insight(serialized_expenses)

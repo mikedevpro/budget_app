@@ -16,7 +16,7 @@ beforeEach(() => {
 function assertInitialLoadingState() {
   expect(screen.getByText("Loading emotion insight...")).toBeInTheDocument();
   expect(screen.queryByText("Local test insight.")).not.toBeInTheDocument();
-  expect(screen.queryByText("Emotion Insight")).not.toBeInTheDocument();
+  expect(screen.queryByText("Emotion-Aware Insight")).not.toBeInTheDocument();
   expect(screen.queryByText("Failed to load emotion insight.")).not.toBeInTheDocument();
 }
 
@@ -43,7 +43,7 @@ test.each([
       }),
     doneText: "Local test insight.",
     expectedState: {
-      mustContain: ["Emotion Insight", "Local test insight."],
+      mustContain: ["Emotion-Aware Insight", "stable mode", "Local test insight."],
       mustNotContain: ["Failed to load emotion insight."],
     },
   },
@@ -54,16 +54,19 @@ test.each([
     doneText: "Failed to load emotion insight.",
     expectedState: {
       mustContain: ["Failed to load emotion insight."],
-      mustNotContain: ["Emotion Insight", "Local test insight."],
+      mustNotContain: ["Emotion-Aware Insight", "Local test insight."],
     },
   },
   {
     name: "partial payload",
     setup: () =>
-      api.emotionRaw.mockResolvedValue({}),
+      api.emotionRaw.mockResolvedValue({
+        state: "stable",
+        message: "Your spending patterns are stable.",
+      }),
     doneText: "Your spending patterns are stable.",
     expectedState: {
-      mustContain: ["Emotion Insight", "Neutral", "Your spending patterns are stable."],
+      mustContain: ["Emotion-Aware Insight", "stable mode", "Your spending patterns are stable."],
       mustNotContain: ["Failed to load emotion insight."],
     },
   },

@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def detect_user_state(expenses: list[dict]) -> str:
     if not expenses:
         return "stable"
@@ -8,7 +9,7 @@ def detect_user_state(expenses: list[dict]) -> str:
 
     category_totals = defaultdict(float)
     for expense in expenses:
-        category = (expense.get("category") or "Other").lower()
+        category = (expense.get("category") or "General").strip().lower()
         category_totals[category] += float(expense.get("amount", 0))
 
     fun_spend = (
@@ -25,8 +26,9 @@ def detect_user_state(expenses: list[dict]) -> str:
     )
 
     fun_ratio = fun_spend / total_spend if total_spend else 0
+    essentials_ratio = essentials_spend / total_spend if total_spend else 0
 
-    if total_spend > 3000 and essentials_spend / total_spend > 0.6:
+    if total_spend > 3000 and essentials_ratio > 0.6:
         return "stressed"
     if fun_ratio > 0.35:
         return "impulsive"
@@ -42,9 +44,20 @@ def generate_emotion_message(state: str) -> str:
     return messages.get(state, messages["stable"])
 
 
+def generate_suggested_action(state: str) -> str:
+    actions = {
+        "stressed": "Review your biggest fixed expenses and look for one category to trim this week.",
+        "impulsive": "Take a quick look at shopping and dining before your next purchase.",
+        "stable": "Keep tracking consistently and watch for changes over time.",
+    }
+    return actions.get(state, actions["stable"])
+
+
 def build_emotion_insight(expenses: list[dict]) -> dict:
     state = detect_user_state(expenses)
     return {
         "state": state,
         "message": generate_emotion_message(state),
+        "suggested_action": generate_suggested_action(state),
+        "confidence": 0.78,
     }
