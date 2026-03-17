@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 
 try:
-    from main import SessionLocal, Expense
+    from ..app import SessionLocal, Expense
 except ImportError:
-    from ..main import SessionLocal, Expense
+    from backend.app import SessionLocal, Expense
 
 try:
-    from app.services.emotion_insights import build_emotion_insight
-except ImportError:
     from ..services.emotion_insights import build_emotion_insight
+except ImportError:
+    from api.services.emotion_insights import build_emotion_insight
 
 router = APIRouter(prefix="/insights", tags=["emotion"])
 

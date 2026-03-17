@@ -67,9 +67,9 @@ class InsightsOut(BaseModel):
 app = FastAPI(title="Budget Insights API")
 
 try:
-    from app.routes.emotion import router as emotion_router
+    from .api.routes.emotion import router as emotion_router
 except ImportError:
-    from .app.routes.emotion import router as emotion_router
+    from api.routes.emotion import router as emotion_router
 
 app.include_router(emotion_router)
 
@@ -77,7 +77,12 @@ origins_env = os.getenv("CORS_ALLOW_ORIGINS")
 if origins_env:
     origins = [o.strip() for o in origins_env.split(",") if o.strip()]
 else:
-    origins = ["http://localhost:5173"]  # safe local default
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
 
 app.add_middleware(
     CORSMiddleware,
