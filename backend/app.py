@@ -66,6 +66,13 @@ class InsightsOut(BaseModel):
 
 app = FastAPI(title="Budget Insights API")
 
+try:
+    from app.routes.emotion import router as emotion_router
+except ImportError:
+    from .app.routes.emotion import router as emotion_router
+
+app.include_router(emotion_router)
+
 origins_env = os.getenv("CORS_ALLOW_ORIGINS")
 if origins_env:
     origins = [o.strip() for o in origins_env.split(",") if o.strip()]

@@ -130,6 +130,14 @@ async function getInsights(range) {
   return { byCategory, overTime };
 }
 
+export async function fetchEmotionInsight() {
+  const response = await fetch(`${API_BASE}/insights/emotion`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch emotion insight");
+  }
+  return response.json();
+}
+
 // ---------- public API ----------
 export const api = {
   // Expenses
@@ -201,6 +209,36 @@ export const api = {
     form.append("file", file);
     return request("/transactions/import", { method: "POST", body: form });
   },
+
+  emotion: async (range = "30") => {
+    if (MODE === "backend") {
+      return request(`/insights/emotion${qs({ range })}`);
+    }
+
+    const expenses = readAllLocal().filter((expense) => inRange(expense, range));
+    if (!expenses.length) {
+      return {
+        state: "neutral",
+        message: "No expenses in this period yet.",
+      };
+    }
+
+    const total = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+    const avg = total / expenses.length;
+    const state = avg > 250 ? "impulsive" : "stable";
+
+    return {
+      state,
+      message:
+        state === "impulsive"
+          ? "Your local spending pace is elevated in the current range."
+          : "Your local spending pace is stable right now.",
+      total: Number(total.toFixed(2)),
+      count: expenses.length,
+    };
+  },
+
+  emotionRaw: fetchEmotionInsight,
 
   insights: getInsights,
 };

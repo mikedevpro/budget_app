@@ -3,6 +3,7 @@ import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 import Summary from "./components/Summary";
 import Charts from "./components/Charts";
+import Dashboard from "./pages/Dashboard";
 import { api } from "./api";
 
 export default function App() {
@@ -244,6 +245,10 @@ export default function App() {
 
       <div className="section card">
         <Summary expenses={expenses} />
+      </div>
+
+      <div className="section card">
+        <Dashboard />
       </div>
 
       <div className="section card">

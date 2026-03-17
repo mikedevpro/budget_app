@@ -10,6 +10,14 @@ jest.mock("./api", () => ({
     overTime: jest.fn().mockResolvedValue([]),
     updateExpense: jest.fn(),
     summary: jest.fn(),
+    emotion: jest.fn().mockResolvedValue({
+      state: "stable",
+      message: "Local test insight.",
+    }),
+    emotionRaw: jest.fn().mockResolvedValue({
+      state: "stable",
+      message: "Local test insight.",
+    }),
   },
 }));
 
