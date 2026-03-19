@@ -51,10 +51,10 @@ test.each([
     name: "error",
     setup: () =>
       api.emotionRaw.mockRejectedValue(new Error("network down")),
-    doneText: "Failed to load emotion insight.",
+    doneText: "Emotion-Aware Insight unavailable.",
     expectedState: {
-      mustContain: ["Failed to load emotion insight."],
-      mustNotContain: ["Emotion-Aware Insight", "Local test insight."],
+      mustContain: ["Failed to load emotion insight.", "Emotion-Aware Insight unavailable."],
+      mustNotContain: ["Local test insight."],
     },
   },
   {

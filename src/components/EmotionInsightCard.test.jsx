@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import EmotionInsightCard from "./EmotionInsightCard";
 
 describe("EmotionInsightCard", () => {
@@ -42,5 +43,16 @@ describe("EmotionInsightCard", () => {
     );
 
     expect(screen.getByText("Suggested action: Review your biggest fixed expenses this week.")).toBeInTheDocument();
+  });
+
+  it("renders retry button when insight is unavailable", async () => {
+    const user = userEvent.setup();
+    const onRetry = jest.fn();
+
+    render(<EmotionInsightCard insight={null} onRetry={onRetry} />);
+
+    expect(screen.getByText("Emotion-Aware Insight unavailable.")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /retry/i }));
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });
